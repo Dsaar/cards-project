@@ -14,11 +14,12 @@ function RegisterForm() {
 
 	const [errors, setErrors] = useState({});
 
-	const scheme = Joi.object({
+	const schemeObj = {
 		firstName: Joi.string().min(2).max(10),
 		middleName: Joi.string().optional().allow(''),
 		lastName: Joi.string().min(2).required()
-	})
+	}
+	const scheme = Joi.object(schemeObj)
 
 	const handleSignup = () => {
 		console.log(userDetails)
@@ -38,31 +39,27 @@ function RegisterForm() {
 			[fieldName]: fieldValue,
 		}));
 
-		if (fieldName === 'firstName') {
-			const firstNameScheme = Joi.object({ firstName: Joi.string().min(2).max(10) })
 
-			const { error } = firstNameScheme.validate({ firstName: fieldValue });
-			if(error){
-				setErrors({ firstName: error.details[0].message });
+		const fieldScheme = Joi.object({ [fieldName]: schemeObj[fieldName] });
 
-			}else{
-				setErrors(prev=>{
-					delete prev.firstName;
-					return prev;
-				})
-			}
+		const { error } = fieldScheme.validate({ [fieldName]: fieldValue });
+		if (error) {
+			setErrors({ [fieldName]: error.details[0].message });
 
+		} else {
+			setErrors((prev) => {
+				delete prev[fieldName];
+				return prev;
+			})
 		}
-
-
 	};
 	return (
 		<Container sx={{ pt: 2 }}>
 			<TextField label={'First Name'}
 				name='firstName' onChange={handleChange} error={Boolean(errors.firstName)}
 				helperText={errors.firstName} />
-			<TextField label={'Middle Name'} name='middleName' onChange={handleChange} />
-			<TextField label={'Last Name'} name='lastName' onChange={handleChange} />
+			<TextField label={'Middle Name'} name='middleName' onChange={handleChange} error={Boolean(errors.middleName)} helperText={errors.middleName} />
+			<TextField label={'Last Name'} name='lastName' onChange={handleChange} error={Boolean(errors.lastName)} helperText={errors.lastName} />
 
 			<Button variant='contained' sx={{ display: 'block' }} onClick={handleSignup}>Sign Up</Button>
 		</Container>
