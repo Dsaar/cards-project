@@ -1,139 +1,200 @@
-import {
-	Button,
-	Checkbox,
-	Container,
-	FormControlLabel,
-	Grid,
-	Paper,
-	TextField,
-	Typography,
-} from "@mui/material";
-import Joi from "joi";
+import { Grid, FormControlLabel, Checkbox, TextField } from "@mui/material";
+
 import useForm from "../../hooks/useForm";
+import Form from "../../components/Form";
+import axios from "axios";
+import { use } from "react";
+import signupSchema from "../models/signupShcema";
+import initialSignupForm from "../helpers/initialForms/initialSignupForm";
+
+
+
+const handleSignUp = async (userDetails) => {
+	const userDetailsForServer = {
+		"name": {
+			"first": userDetails.first,
+			"middle": userDetails.middle,
+			"last": userDetails.last
+		},
+		"phone": userDetails.phone,
+		"email": userDetails.email,
+		"password": userDetails.password,
+		"image": {
+			"url": userDetails.url,
+			"alt": userDetails.alt
+		},
+		"address": {
+			"state": userDetails.state,
+			"country": userDetails.country,
+			"city": userDetails.city,
+			"street": userDetails.street,
+			"houseNumber": userDetails.houseNumber,
+			"zip": userDetails.zip
+		},
+		"isBusiness": true
+	}
+	try {
+		const response = await axios.post
+			('https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users',
+				userDetailsForServer);
+		console.log(response);
+	} catch (error) {
+		console.log(error);
+		if (error.response) {
+			alert(error.response.data)
+		}
+	}
+
+
+
+};
 
 function RegisterForm() {
 	const { formDetails, errors, handleChange, handleSubmit } = useForm(
-		{
-			firstName: "",
-			middleName: "",
-			lastName: "",
-			email: "",
-			phone: "",
-			password: "",
-			imageUrl: "",
-			imageAlt: "",
-			state: "",
-			country: "",
-			city: "",
-			street: "",
-			houseNumber: "",
-			zip: "",
-			isBusiness: false,
-		},
-		{
-			firstName: Joi.string().min(2).max(256).required(),
-			middleName: Joi.string().min(2).max(256).allow(""),
-			lastName: Joi.string().min(2).max(256).required(),
-			email: Joi.string().min(5).email({ tlds: false }).required(),
-			phone: Joi.string().min(9).max(11).required(),
-			password: Joi.string().min(7).required(),
-			imageUrl: Joi.string().uri().allow(""),
-			imageAlt: Joi.string().min(2).max(256).allow(""),
-			state: Joi.string().min(2).max(256).allow(""),
-			country: Joi.string().min(2).max(256).required(),
-			city: Joi.string().min(2).max(256).required(),
-			street: Joi.string().min(2).max(256).required(),
-			houseNumber: Joi.string().min(2).max(256).required(),
-			zip: Joi.string().min(2).max(256).allow(""),
-			isBusiness: Joi.boolean(),
-		}
+		initialSignupForm,
+		signupSchema,
+		handleSignUp,
+
 	);
 
 	return (
-		<Container maxWidth="md" sx={{ py: 5 }}>
-			<Paper elevation={3} sx={{ p: 4, bgcolor: "#eaf4fc" }}>
-				<Typography variant="h5" align="center" gutterBottom>
-					REGISTER FORM
-				</Typography>
-
-				<Grid container spacing={2} sx={{display:'flex', justifyContent:'center'}}>
-					{[
-						{ label: "First name *", name: "firstName" },
-						{ label: "Middle name", name: "middleName" },
-						{ label: "Last name *", name: "lastName" },
-						{ label: "Phone *", name: "phone" },
-						{ label: "Email *", name: "email" },
-						{ label: "Password *", name: "password", type: "password" },
-						{ label: "Image url", name: "imageUrl" },
-						{ label: "Image alt", name: "imageAlt" },
-						{ label: "State", name: "state" },
-						{ label: "Country *", name: "country" },
-						{ label: "City *", name: "city" },
-						{ label: "Street *", name: "street" },
-						{ label: "House number *", name: "houseNumber" },
-						{ label: "Zip", name: "zip" },
-					].map(({ label, name, type = "text" }) => (
-						<Grid item xs={12} sm={6} key={name}>
-							<TextField
-								fullWidth
-								label={label}
-								name={name}
-								type={type}
-								value={formDetails[name]}
-								onChange={handleChange}
-								error={Boolean(errors[name])}
-								helperText={errors[name]}
-								sx={{minWidth:'300px'}}
-							/>
-						</Grid>
-					))}
-
-					<Grid item xs={12} sx={{minWidth:'700px', display:'flex', justifyContent:'center'}}>
-						<FormControlLabel
-							control={
-								<Checkbox
-									name="isBusiness"
-									checked={formDetails.isBusiness}
-									onChange={(e) =>
-										handleChange({
-											target: {
-												name: "isBusiness",
-												value: e.target.checked,
-											},
-										})
-									}
-								/>
-							}
-							label="Sign up as business"
-						/>
-					</Grid>
-
-					<Grid item xs={12} sm={6} sx={{minWidth:'200px'}}>
-						<Button
-							fullWidth
-							variant="outlined"
-							color="error"
-							onClick={() => console.log("Canceled")}
-						>
-							Cancel
-						</Button>
-					</Grid>
-
-					<Grid item xs={12} sm={6} sx={{minWidth:'200px'}}>
-						<Button
-							fullWidth
-							variant="contained"
-							onClick={handleSubmit}
-							disabled={Object.keys(errors).length > 0}
-						>
-							Submit
-						</Button>
-					</Grid>
-				</Grid>
-			</Paper>
-		</Container>
+		<Form
+			onSubmit={handleSubmit}
+			onReset={() => { }}
+			title={"sign up form"}
+			styles={{ maxWidth: "800px" }}
+		>
+			<TextField
+				name="first"
+				label="first name"
+				error={errors.first}
+				onChange={handleChange}
+				value={formDetails.first}
+				sm={6}
+			/>
+			<TextField
+				name="middle"
+				label="middle name"
+				error={errors.middle}
+				onChange={handleChange}
+				value={formDetails.middle}
+				sm={6}
+				required={false}
+			/>
+			<TextField
+				name="last"
+				label="last name"
+				error={errors.last}
+				onChange={handleChange}
+				value={formDetails.last}
+				sm={6}
+			/>
+			<TextField
+				name="phone"
+				label="phone"
+				type="phone"
+				error={errors.phone}
+				onChange={handleChange}
+				value={formDetails.phone}
+				sm={6}
+			/>
+			<TextField
+				name="email"
+				label="email"
+				type="email"
+				error={errors.email}
+				onChange={handleChange}
+				value={formDetails.email}
+				sm={6}
+			/>
+			<TextField
+				name="password"
+				label="password"
+				type="password"
+				error={errors.password}
+				onChange={handleChange}
+				value={formDetails.password}
+				sm={6}
+			/>
+			<TextField
+				name="url"
+				label="image url"
+				error={errors.url}
+				onChange={handleChange}
+				value={formDetails.url}
+				sm={6}
+				required={false}
+			/>
+			<TextField
+				name="alt"
+				label="image alt"
+				error={errors.alt}
+				onChange={handleChange}
+				value={formDetails.alt}
+				sm={6}
+				required={false}
+			/>
+			<TextField
+				name="state"
+				label="state"
+				error={errors.state}
+				onChange={handleChange}
+				value={formDetails.state}
+				sm={6}
+				required={false}
+			/>
+			<TextField
+				label="country"
+				name="country"
+				error={errors.country}
+				onChange={handleChange}
+				value={formDetails.country}
+				sm={6}
+			/>
+			<TextField
+				name="city"
+				label="city"
+				error={errors.city}
+				onChange={handleChange}
+				value={formDetails.city}
+				sm={6}
+			/>
+			<TextField
+				name="street"
+				label="street"
+				error={errors.street}
+				onChange={handleChange}
+				value={formDetails.street}
+				sm={6}
+			/>
+			<TextField
+				name="houseNumber"
+				label="house Number"
+				type="number"
+				error={errors.houseNumber}
+				onChange={handleChange}
+				value={formDetails.houseNumber}
+				sm={6}
+			/>
+			<TextField
+				name="zip"
+				label="zip"
+				error={errors.zip}
+				onChange={handleChange}
+				value={formDetails.zip}
+				sm={6}
+				required={false}
+			/>
+			{/* <Grid item>
+        <FormControlLabel
+          onChange={handleChangeCheckBox}
+          name="isBusiness"
+          control={<Checkbox value={formDetails.isBusiness} color="primary" />}
+          label="Signup as business"
+        />
+      </Grid> */}
+		</Form>
 	);
 }
 
 export default RegisterForm;
-  

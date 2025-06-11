@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Joi from "joi";
-export default function useForm(initialForm, schemaObj) {
+
+export default function useForm(initialForm, schemaObj, onSubmit) {
 	const [formDetails, setFormDetails] = useState(initialForm);
 	const [errors, setErrors] = useState({});
 
@@ -34,6 +35,10 @@ export default function useForm(initialForm, schemaObj) {
 		console.log(formDetails);
 		const { error } = schema.validate(formDetails, { abortEarly: false });
 		console.log(error);
+
+		if (!error) {
+			onSubmit(formDetails);
+		}
 	};
 
 	return {
