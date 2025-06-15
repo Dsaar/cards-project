@@ -7,7 +7,7 @@ const useCountries = () => {
 	useEffect(() => {
 		const getCountries = async () => {
 			try {
-				const res = await fetch('https://restcountries.com/v3.1/all');
+				const res = await fetch('https://restcountries.com/v3.1/all?fields=name,flags,capital');
 				const jsonCountries = await res.json();
 
 				const formatted = jsonCountries.map((country) => ({
