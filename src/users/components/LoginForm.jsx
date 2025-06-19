@@ -5,20 +5,27 @@ import axios from "axios";
 import { use } from "react";
 import loginSchema from "../models/loginSchema";
 import initialLoginForm from "../helpers/initialForms/initialLogInForm";
+import { getUser, setTokenInLocalStorage } from "../services/localStorageService";
+import { useCurrentUser } from "../providers/UserProvider";
 
 
-
-
-const handleLogin = async (user) => {
-	try {
-		const response = await axios.post('https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/login', user);
-		console.log(response);
-	} catch (error) {
-		alert('The login has failed')
-	}
-};
 
 function LoginForm() {
+
+	const {setToken,setUser}=useCurrentUser()
+
+	const handleLogin = async (user) => {
+		try {
+			const response = await axios.post('https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/login', user);
+			console.log(response);
+			setTokenInLocalStorage(response.data);
+			setToken(response.data);
+			setUser(getUser());
+		} catch (error) {
+			alert('The login has failed')
+		}
+	};
+
 	const { formDetails, errors, handleChange, handleSubmit } = useForm(
 		initialLoginForm,
 		loginSchema,

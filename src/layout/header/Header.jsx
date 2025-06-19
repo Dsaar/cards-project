@@ -1,10 +1,12 @@
 import React from 'react'
-import { AppBar, Box, Toolbar, Button} from "@mui/material";
+import { AppBar, Box, Toolbar, Button } from "@mui/material";
 import NavLinkTemplate from '/src/components/NavLinkTemplate';
 import ROUTES from '../../router/routesDictionary';
-import {useTheme} from '../../providers/CustomThemeProvider';
+import { useTheme } from '../../providers/CustomThemeProvider';
+import { useCurrentUser } from '../../users/providers/UserProvider';
 function Header() {
-	const { toggleMode,isDark } = useTheme()
+	const { toggleMode, isDark } = useTheme()
+	const { user } = useCurrentUser()
 	return (
 		<div>
 			<AppBar position="sticky" color="primary" elevation={10}>
@@ -18,9 +20,13 @@ function Header() {
 					</Box>
 
 					<Box sx={{ display: 'flex', gap: 1 }}>
-						<NavLinkTemplate to={ROUTES.register} label="SIGNUP" />
-						<NavLinkTemplate to={ROUTES.login} label="LOGIN" />
-						<Button onClick={toggleMode} sx={{ color: 'white' }}>{isDark?'Light':'Dark'} Mode</Button>
+						{user ? null : (
+							<>
+								<NavLinkTemplate to={ROUTES.register} label="SIGNUP" />
+								<NavLinkTemplate to={ROUTES.login} label="LOGIN" />
+							</>
+						)}
+						<Button onClick={toggleMode} sx={{ color: 'white' }}>{isDark ? 'Light' : 'Dark'} Mode</Button>
 					</Box>
 				</Toolbar>
 			</AppBar>
