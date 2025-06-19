@@ -1,11 +1,13 @@
 import { Box } from '@mui/material';
 import React from 'react';
+import { useTheme } from '../../providers/CustomThemeProvider';
 
 function Main({ children }) {
+  const { isDark } = useTheme()
   return (
     <Box
       sx={{
-        backgroundColor: '#e3f2fd',
+        backgroundColor: isDark ? '#333333' : '#e3f2fd',
         minHeight: '100vh',         // ensures full height
         paddingBottom: '80px',      // leaves space for fixed footer
       }}
