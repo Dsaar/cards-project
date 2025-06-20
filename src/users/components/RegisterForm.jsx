@@ -1,198 +1,112 @@
-import { Grid, FormControlLabel, Checkbox, TextField } from "@mui/material";
-
-import useForm from "../../hooks/useForm";
-import Form from "../../components/Form";
+import { TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { use } from "react";
+import useForm from "../../hooks/useForm";
 import signupSchema from "../models/signupShcema";
 import initialSignupForm from "../helpers/initialForms/initialSignupForm";
-
-
-
-const handleSignUp = async (userDetails) => {
-	const userDetailsForServer = {
-		"name": {
-			"first": userDetails.first,
-			"middle": userDetails.middle,
-			"last": userDetails.last
-		},
-		"phone": userDetails.phone,
-		"email": userDetails.email,
-		"password": userDetails.password,
-		"image": {
-			"url": userDetails.url,
-			"alt": userDetails.alt
-		},
-		"address": {
-			"state": userDetails.state,
-			"country": userDetails.country,
-			"city": userDetails.city,
-			"street": userDetails.street,
-			"houseNumber": userDetails.houseNumber,
-			"zip": userDetails.zip
-		},
-		"isBusiness": true
-	}
-	try {
-		const response = await axios.post
-			('https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users',
-				userDetailsForServer);
-		console.log(response);
-	} catch (error) {
-		console.log(error);
-		if (error.response) {
-			alert(error.response.data)
-		}
-	}
-
-
-
-};
+import Form from "../../components/Form";
+import { useCurrentUser } from "../providers/UserProvider";
+import { getUser, setTokenInLocalStorage } from "../services/localStorageService";
 
 function RegisterForm() {
+	const navigate = useNavigate();
+	const { setUser, setToken } = useCurrentUser();
+
+	const handleSignUp = async (userDetails) => {
+		const userDetailsForServer = {
+			name: {
+				first: userDetails.first,
+				middle: userDetails.middle,
+				last: userDetails.last,
+			},
+			phone: userDetails.phone,
+			email: userDetails.email,
+			password: userDetails.password,
+			image: {
+				url: userDetails.url,
+				alt: userDetails.alt,
+			},
+			address: {
+				state: userDetails.state,
+				country: userDetails.country,
+				city: userDetails.city,
+				street: userDetails.street,
+				houseNumber: userDetails.houseNumber,
+				zip: userDetails.zip,
+			},
+			isBusiness: true,
+		};
+
+		try {
+			const response = await axios.post(
+				"https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users",
+				userDetailsForServer
+			);
+			console.log("Signup success:", response.data);
+
+			// OPTIONAL: Auto-login after signup
+			const loginResponse = await axios.post(
+				"https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/login",
+				{
+					email: userDetails.email,
+					password: userDetails.password,
+				}
+			);
+			setTokenInLocalStorage(loginResponse.data);
+			setToken(loginResponse.data);
+			setUser(getUser());
+			console.log("Redirecting...")
+			navigate("/"); // Redirect to home page
+		} catch (error) {
+			console.error("Signup failed:", error);
+			if (error.response?.data) {
+				alert(error.response.data);
+			}
+		}
+	};
+
 	const { formDetails, errors, handleChange, handleSubmit } = useForm(
 		initialSignupForm,
 		signupSchema,
-		handleSignUp,
-
+		handleSignUp
 	);
 
 	return (
 		<Form
 			onSubmit={handleSubmit}
 			onReset={() => { }}
-			title={"sign up form"}
+			title="Sign Up Form"
 			styles={{ maxWidth: "800px" }}
 		>
-			<TextField
-				name="first"
-				label="first name"
-				error={errors.first}
-				onChange={handleChange}
-				value={formDetails.first}
-				sm={6}
-			/>
-			<TextField
-				name="middle"
-				label="middle name"
-				error={errors.middle}
-				onChange={handleChange}
-				value={formDetails.middle}
-				sm={6}
-				required={false}
-			/>
-			<TextField
-				name="last"
-				label="last name"
-				error={errors.last}
-				onChange={handleChange}
-				value={formDetails.last}
-				sm={6}
-			/>
-			<TextField
-				name="phone"
-				label="phone"
-				type="phone"
-				error={errors.phone}
-				onChange={handleChange}
-				value={formDetails.phone}
-				sm={6}
-			/>
-			<TextField
-				name="email"
-				label="email"
-				type="email"
-				error={errors.email}
-				onChange={handleChange}
-				value={formDetails.email}
-				sm={6}
-			/>
-			<TextField
-				name="password"
-				label="password"
-				type="password"
-				error={errors.password}
-				onChange={handleChange}
-				value={formDetails.password}
-				sm={6}
-			/>
-			<TextField
-				name="url"
-				label="image url"
-				error={errors.url}
-				onChange={handleChange}
-				value={formDetails.url}
-				sm={6}
-				required={false}
-			/>
-			<TextField
-				name="alt"
-				label="image alt"
-				error={errors.alt}
-				onChange={handleChange}
-				value={formDetails.alt}
-				sm={6}
-				required={false}
-			/>
-			<TextField
-				name="state"
-				label="state"
-				error={errors.state}
-				onChange={handleChange}
-				value={formDetails.state}
-				sm={6}
-				required={false}
-			/>
-			<TextField
-				label="country"
-				name="country"
-				error={errors.country}
-				onChange={handleChange}
-				value={formDetails.country}
-				sm={6}
-			/>
-			<TextField
-				name="city"
-				label="city"
-				error={errors.city}
-				onChange={handleChange}
-				value={formDetails.city}
-				sm={6}
-			/>
-			<TextField
-				name="street"
-				label="street"
-				error={errors.street}
-				onChange={handleChange}
-				value={formDetails.street}
-				sm={6}
-			/>
-			<TextField
-				name="houseNumber"
-				label="house Number"
-				type="number"
-				error={errors.houseNumber}
-				onChange={handleChange}
-				value={formDetails.houseNumber}
-				sm={6}
-			/>
-			<TextField
-				name="zip"
-				label="zip"
-				error={errors.zip}
-				onChange={handleChange}
-				value={formDetails.zip}
-				sm={6}
-				required={false}
-			/>
-			{/* <Grid item>
-        <FormControlLabel
-          onChange={handleChangeCheckBox}
-          name="isBusiness"
-          control={<Checkbox value={formDetails.isBusiness} color="primary" />}
-          label="Signup as business"
-        />
-      </Grid> */}
+			{[
+				{ name: "first", label: "First Name" },
+				{ name: "middle", label: "Middle Name", required: false },
+				{ name: "last", label: "Last Name" },
+				{ name: "phone", label: "Phone", type: "phone" },
+				{ name: "email", label: "Email", type: "email" },
+				{ name: "password", label: "Password", type: "password" },
+				{ name: "url", label: "Image URL", required: false },
+				{ name: "alt", label: "Image Alt", required: false },
+				{ name: "state", label: "State", required: false },
+				{ name: "country", label: "Country" },
+				{ name: "city", label: "City" },
+				{ name: "street", label: "Street" },
+				{ name: "houseNumber", label: "House Number", type: "number" },
+				{ name: "zip", label: "Zip", type: "number", required: false },
+			].map((field) => (
+				<TextField
+					key={field.name}
+					name={field.name}
+					label={field.label}
+					type={field.type || "text"}
+					required={field.required !== false}
+					error={!!errors[field.name]}
+					helperText={errors[field.name]}
+					onChange={handleChange}
+					value={formDetails[field.name]}
+					sx={{ m: 1, width: "calc(50% - 16px)" }}
+				/>
+			))}
 		</Form>
 	);
 }
