@@ -7,10 +7,17 @@ import loginSchema from "../models/loginSchema";
 import initialLoginForm from "../helpers/initialForms/initialLogInForm";
 import { getUser, setTokenInLocalStorage } from "../services/localStorageService";
 import { useCurrentUser } from "../providers/UserProvider";
+import { Navigate } from 'react-router-dom'
+
 
 
 
 function LoginForm() {
+	const { user } = useCurrentUser()
+
+	if (user) {
+		return <Navigate to={'/'} replace />
+	}
 
 	const {setToken,setUser}=useCurrentUser()
 
