@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import {getToken,getUser} from '../services/localStorageService'
 
 
 
@@ -9,8 +10,8 @@ const UserContext = createContext();
 //step 2: create the provider
 
 export default function UserProvider({ children }) {
-	const [user, setUser] = useState()
-	const [token, setToken] = useState()
+	const [user, setUser] = useState(getUser())
+	const [token, setToken] = useState(getToken())
 
 return <UserContext.Provider value={{user,setUser,token,setToken}}>{children}</UserContext.Provider>
 }
