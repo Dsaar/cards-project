@@ -11,7 +11,7 @@ const Form = ({
 	onReset,
 	to = "/",
 	color = "inherit",
-	spacing = 1,
+	spacing = 2,
 	styles = {},
 	children,
 }) => {
@@ -21,12 +21,18 @@ const Form = ({
 		<Box
 			component="form"
 			color={color}
-			sx={{ mt: 2, p: { xs: 1, sm: 2 }, ...styles }}
+			sx={{
+				mt: 2,
+				p: { xs: 2, sm: 4 },
+				width: "100%",
+				maxWidth: "900px",
+				...styles,
+			}}
 			onSubmit={onSubmit}
 			autoComplete="off"
 			noValidate
 		>
-			<Typography align="center" variant="h5" component="h1" mb={2}>
+			<Typography align="center" variant="h5" component="h1" mb={3}>
 				{title.toUpperCase()}
 			</Typography>
 
@@ -34,10 +40,10 @@ const Form = ({
 				{children}
 			</Grid>
 
-			<Grid container spacing={1} my={2} direction="row" width="100">
+			<Grid container spacing={2} mt={3}>
 				<Grid item xs={12} sm={6}>
 					<FormButton
-						node="cancel"
+						node="CANCEL"
 						color="error"
 						component="div"
 						variant="outlined"
@@ -53,7 +59,7 @@ const Form = ({
 					/>
 				</Grid>
 				<Grid item xs={12}>
-					<FormButton node="Submit" onClick={onSubmit} size="large" />
+					<FormButton node="SUBMIT" onClick={onSubmit} size="large" fullWidth />
 				</Grid>
 			</Grid>
 		</Box>

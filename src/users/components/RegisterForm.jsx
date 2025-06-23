@@ -1,4 +1,10 @@
-import { TextField } from "@mui/material";
+import {
+	TextField,
+	Grid,
+	FormControlLabel,
+	Checkbox,
+	Box,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useForm from "../../hooks/useForm";
@@ -34,7 +40,7 @@ function RegisterForm() {
 				houseNumber: userDetails.houseNumber,
 				zip: userDetails.zip,
 			},
-			isBusiness: true,
+			isBusiness: userDetails.isBusiness,
 		};
 
 		try {
@@ -42,9 +48,7 @@ function RegisterForm() {
 				"https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users",
 				userDetailsForServer
 			);
-			console.log("Signup success:", response.data);
 
-			// OPTIONAL: Auto-login after signup
 			const loginResponse = await axios.post(
 				"https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/login",
 				{
@@ -52,11 +56,11 @@ function RegisterForm() {
 					password: userDetails.password,
 				}
 			);
+
 			setTokenInLocalStorage(loginResponse.data);
 			setToken(loginResponse.data);
 			setUser(getUser());
-			console.log("Redirecting...")
-			navigate("/"); // Redirect to home page
+			navigate("/");
 		} catch (error) {
 			console.error("Signup failed:", error);
 			if (error.response?.data) {
@@ -71,42 +75,70 @@ function RegisterForm() {
 		handleSignUp
 	);
 
+	const fields = [
+		{ name: "first", label: "First Name" },
+		{ name: "middle", label: "Middle Name", required: false },
+		{ name: "last", label: "Last Name" },
+		{ name: "phone", label: "Phone", type: "phone" },
+		{ name: "email", label: "Email", type: "email" },
+		{ name: "password", label: "Password", type: "password" },
+		{ name: "url", label: "Image URL", required: false },
+		{ name: "alt", label: "Image Alt", required: false },
+		{ name: "state", label: "State", required: false },
+		{ name: "country", label: "Country" },
+		{ name: "city", label: "City" },
+		{ name: "street", label: "Street" },
+		{ name: "houseNumber", label: "House Number", type: "number" },
+		{ name: "zip", label: "Zip", type: "number", required: false },
+	];
+
 	return (
 		<Form
 			onSubmit={handleSubmit}
 			onReset={() => { }}
 			title="Sign Up Form"
-			styles={{ maxWidth: "800px" }}
 		>
-			{[
-				{ name: "first", label: "First Name" },
-				{ name: "middle", label: "Middle Name", required: false },
-				{ name: "last", label: "Last Name" },
-				{ name: "phone", label: "Phone", type: "phone" },
-				{ name: "email", label: "Email", type: "email" },
-				{ name: "password", label: "Password", type: "password" },
-				{ name: "url", label: "Image URL", required: false },
-				{ name: "alt", label: "Image Alt", required: false },
-				{ name: "state", label: "State", required: false },
-				{ name: "country", label: "Country" },
-				{ name: "city", label: "City" },
-				{ name: "street", label: "Street" },
-				{ name: "houseNumber", label: "House Number", type: "number" },
-				{ name: "zip", label: "Zip", type: "number", required: false },
-			].map((field) => (
-				<TextField
-					key={field.name}
-					name={field.name}
-					label={field.label}
-					type={field.type || "text"}
-					required={field.required !== false}
-					error={!!errors[field.name]}
-					helperText={errors[field.name]}
-					onChange={handleChange}
-					value={formDetails[field.name]}
-					sx={{ m: 1, width: "calc(50% - 16px)" }}
-				/>
-			))}
+			<Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
+				{fields.map((field) => (
+					<Grid item xs={12} sm={6} key={field.name}>
+						<TextField
+							fullWidth
+							sx={{ width: '400px' }}
+							name={field.name}
+							label={field.label}
+							type={field.type || "text"}
+							required={field.required !== false}
+							error={!!errors[field.name]}
+							helperText={errors[field.name]}
+							onChange={handleChange}
+							value={formDetails[field.name]}
+						/>
+					</Grid>
+				))}
+				<Grid item xs={12} sm={6} sx={{ display: "flex", justifyContent: "flex-start" }}>
+					<Box sx={{ width: "400px" }}>
+						<FormControlLabel
+							control={
+								<Checkbox
+									checked={formDetails.isBusiness}
+									onChange={(e) =>
+										handleChange({
+											target: {
+												name: "isBusiness",
+												value: e.target.checked,
+											},
+										})
+									}
+									name="isBusiness"
+								/>
+							}
+							label="Signup as business"
+							sx={{ pl: 0, ml: '-220px' }}
+						/>
+					</Box>
+				</Grid>
+
+			</Grid>
 		</Form>
 	);
 }
