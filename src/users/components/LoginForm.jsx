@@ -14,12 +14,13 @@ import initialLoginForm from "../helpers/initialForms/initialLogInForm";
 import { getUser, setTokenInLocalStorage } from "../services/localStorageService";
 import { useCurrentUser } from "../providers/UserProvider";
 import Form from "../../components/Form";
+import { useSnack } from '../../providers/SnackBarProvider'
 
 function LoginForm() {
 	const { user, setUser, setToken } = useCurrentUser();
 	const navigate = useNavigate();
 
-
+	const setSnack = useSnack();
 
 	const handleLogin = async (credentials) => {
 		const failedAttempts = parseInt(localStorage.getItem("failedLoginAttempts")) || 0;
@@ -28,7 +29,7 @@ function LoginForm() {
 		// Check lockout
 		if (lockedUntil && Date.now() < parseInt(lockedUntil)) {
 			const minutesLeft = Math.ceil((parseInt(lockedUntil) - Date.now()) / 60000);
-			alert(`You are locked out. Please try again in ${minutesLeft} minute(s).`);
+			setSnack("error", `You are locked out. Try again in ${minutesLeft} minute(s).`);
 			return;
 		}
 
@@ -53,13 +54,13 @@ function LoginForm() {
 			if (newAttempts >= 3) {
 				const lockUntil = Date.now() + 15 * 60 * 1000; // 15 minutes
 				localStorage.setItem("loginLockedUntil", lockUntil);
-				alert("Too many failed attempts. You are locked out for 15 minutes.");
+				setSnack("error", "Too many failed attempts. You are locked out for 15 minutes.");
 			} else {
-				alert(`Login failed. You have ${3 - newAttempts} attempt(s) left.`);
+				setSnack("error", `Login failed. You have ${3 - newAttempts} attempt(s) left.`);
 			}
 		}
 	};
-	  
+
 	const { formDetails, errors, handleChange, handleSubmit } = useForm(
 		initialLoginForm,
 		loginSchema,
