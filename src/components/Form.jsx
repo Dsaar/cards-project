@@ -40,28 +40,43 @@ const Form = ({
 				{children}
 			</Grid>
 
-			<Grid container spacing={2} mt={3}>
+			<Grid container spacing={2} justifyContent="center" sx={{ mt: 3 }}>
 				<Grid item xs={12} sm={6}>
-					<FormButton
-						node="CANCEL"
-						color="error"
-						component="div"
-						variant="outlined"
-						onClick={() => navigate(to)}
-					/>
+					<Box sx={{ width: '400px', mx: 'auto' }}>
+						<FormButton
+							node="CANCEL"
+							color="error"
+							variant="outlined"
+							onClick={() => navigate(to)}
+							fullWidth
+						/>
+					</Box>
 				</Grid>
+
 				<Grid item xs={12} sm={6}>
-					<FormButton
-						node={<LoopIcon />}
-						variant="outlined"
-						component="div"
-						onClick={onReset}
-					/>
+					<Box sx={{ width: '400px', mx: 'auto' }}>
+						<FormButton
+							node={<LoopIcon />}
+							variant="outlined"
+							onClick={onReset}
+							fullWidth
+						/>
+					</Box>
 				</Grid>
+
 				<Grid item xs={12}>
-					<FormButton node="SUBMIT" onClick={onSubmit} size="large" fullWidth />
+					<Box sx={{ width: '820px', mx: 'auto' }}>
+						<FormButton
+							node="SUBMIT"
+							onClick={onSubmit}
+							size="large"
+							fullWidth
+						/>
+					</Box>
 				</Grid>
+
 			</Grid>
+
 		</Box>
 	);
 };
