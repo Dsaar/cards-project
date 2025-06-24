@@ -19,7 +19,7 @@ function LoginForm() {
 	const { user, setUser, setToken } = useCurrentUser();
 	const navigate = useNavigate();
 
-	if (user) return <Navigate to="/" replace />;
+
 
 	const handleLogin = async (credentials) => {
 		try {
@@ -30,6 +30,7 @@ function LoginForm() {
 			setTokenInLocalStorage(response.data);
 			setToken(response.data);
 			setUser(getUser());
+			navigate('/')
 		} catch (error) {
 			alert("Login failed");
 		}
