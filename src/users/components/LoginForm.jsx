@@ -22,20 +22,44 @@ function LoginForm() {
 
 
 	const handleLogin = async (credentials) => {
+		const failedAttempts = parseInt(localStorage.getItem("failedLoginAttempts")) || 0;
+		const lockedUntil = localStorage.getItem("loginLockedUntil");
+
+		// Check lockout
+		if (lockedUntil && Date.now() < parseInt(lockedUntil)) {
+			const minutesLeft = Math.ceil((parseInt(lockedUntil) - Date.now()) / 60000);
+			alert(`You are locked out. Please try again in ${minutesLeft} minute(s).`);
+			return;
+		}
+
 		try {
 			const response = await axios.post(
 				"https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/login",
 				credentials
 			);
+
+			// Reset attempts on success
+			localStorage.removeItem("failedLoginAttempts");
+			localStorage.removeItem("loginLockedUntil");
+
 			setTokenInLocalStorage(response.data);
 			setToken(response.data);
 			setUser(getUser());
-			navigate('/')
+			navigate("/");
 		} catch (error) {
-			alert("Login failed");
+			const newAttempts = failedAttempts + 1;
+			localStorage.setItem("failedLoginAttempts", newAttempts);
+
+			if (newAttempts >= 3) {
+				const lockUntil = Date.now() + 15 * 60 * 1000; // 15 minutes
+				localStorage.setItem("loginLockedUntil", lockUntil);
+				alert("Too many failed attempts. You are locked out for 15 minutes.");
+			} else {
+				alert(`Login failed. You have ${3 - newAttempts} attempt(s) left.`);
+			}
 		}
 	};
-
+	  
 	const { formDetails, errors, handleChange, handleSubmit } = useForm(
 		initialLoginForm,
 		loginSchema,
