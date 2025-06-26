@@ -5,10 +5,11 @@ import createCardSchema from "../models/createCardSchema";
 import initialCreateCardForm from "../helpers/initialForms/initialCreateCardForm";
 import axios from "axios";
 import Form from "../../components/Form";
+import { getToken } from '../services/localStorageService';
 
 function CreateCardForm() {
 	const handleCreateCard = async (data) => {
-		const payload = {
+		const formattedData = {
 			title: data.title,
 			subtitle: data.subtitle,
 			description: data.description,
@@ -24,15 +25,22 @@ function CreateCardForm() {
 				country: data.country,
 				city: data.city,
 				street: data.street,
-				houseNumber: Number(data.houseNumber),
-				zip: data.zip ? Number(data.zip) : undefined,
+				houseNumber: data.houseNumber,
+				zip: data.zip,
 			},
 		};
 
 		try {
-			await axios.post(
+			const token = getToken(); 
+			console.log("Sending token:", token);// get token from localStorage
+			const response = await axios.post(
 				"https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards",
-				payload
+				formattedData,
+				{
+					headers: {
+						"x-auth-token": token, // pass token here
+					},
+				}
 			);
 			alert("Card created successfully!");
 		} catch (error) {

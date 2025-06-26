@@ -12,7 +12,7 @@ function LoginPage() {
         justifyContent: 'center',
         alignItems: 'center',
         p: 0,
-        m:-7
+       
       }}
     >
       <LoginForm />

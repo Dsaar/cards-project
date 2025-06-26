@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const createCardSchema = Joi.object({
+const createCardSchema = {
 	title: Joi.string().min(2).max(256).required(),
 	subtitle: Joi.string().min(2).max(256).required(),
 	description: Joi.string().min(2).max(1024).required(),
@@ -14,7 +14,7 @@ const createCardSchema = Joi.object({
 	city: Joi.string().required(),
 	street: Joi.string().required(),
 	houseNumber: Joi.number().required(),
-	zip: Joi.number().allow(""),
-});
+	zip: Joi.number().allow("")
+};
 
 export default createCardSchema;
