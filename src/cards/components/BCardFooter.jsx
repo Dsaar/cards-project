@@ -2,22 +2,31 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CallIcon from "@mui/icons-material/Call";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Box, CardActions, IconButton } from "@mui/material";
+import {
+	Box,
+	CardActions,
+	IconButton,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	Button
+} from "@mui/material";
 import { getToken } from "../../users/services/localStorageService";
 import axios from "axios";
 import { useSnack } from "../../providers/SnackBarProvider";
+import { useState } from "react";
 
 function BCardFooter({ cardId, bizNumber, onDelete }) {
 	const setSnack = useSnack();
+	const [open, setOpen] = useState(false);
+
+	const handleConfirmOpen = () => setOpen(true);
+	const handleConfirmClose = () => setOpen(false);
 
 	const handleDelete = async () => {
 		const token = getToken();
-
-		console.log("Attempting delete with:", {
-			cardId,
-			bizNumber,
-			token: token?.slice(0, 20) + "...",
-		});
 
 		try {
 			await axios.delete(
@@ -32,43 +41,57 @@ function BCardFooter({ cardId, bizNumber, onDelete }) {
 			);
 
 			setSnack("success", "Card deleted successfully.");
+			handleConfirmClose();
 			if (onDelete) onDelete(cardId);
 		} catch (error) {
-			if (error.response) {
-				console.error("DELETE failed:", {
-					status: error.response.status,
-					message: error.response.data,
-				});
-				setSnack("error", error.response.data || "Card deletion failed.");
-			} else {
-				console.error("Unexpected error:", error.message);
-				setSnack("error", "Unexpected error during deletion.");
-			}
+			const msg = error?.response?.data || "Card deletion failed.";
+			console.error("DELETE failed:", msg);
+			setSnack("error", msg);
+			handleConfirmClose();
 		}
 	};
 
 	return (
-		<CardActions sx={{ display: "flex", justifyContent: "space-between" }} disableSpacing>
-			<Box>
-				<IconButton onClick={handleDelete}>
-					<DeleteIcon />
-				</IconButton>
+		<>
+			<CardActions sx={{ display: "flex", justifyContent: "space-between" }} disableSpacing>
+				<Box>
+					<IconButton onClick={handleConfirmOpen}>
+						<DeleteIcon />
+					</IconButton>
 
-				<IconButton>
-					<EditIcon />
-				</IconButton>
-			</Box>
+					<IconButton>
+						<EditIcon />
+					</IconButton>
+				</Box>
 
-			<Box>
-				<IconButton>
-					<CallIcon />
-				</IconButton>
+				<Box>
+					<IconButton>
+						<CallIcon />
+					</IconButton>
 
-				<IconButton>
-					<FavoriteIcon />
-				</IconButton>
-			</Box>
-		</CardActions>
+					<IconButton>
+						<FavoriteIcon />
+					</IconButton>
+				</Box>
+			</CardActions>
+
+			<Dialog open={open} onClose={handleConfirmClose}>
+				<DialogTitle>Delete Card?</DialogTitle>
+				<DialogContent>
+					<DialogContentText>
+						Are you sure you want to delete this card? This action cannot be undone.
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleConfirmClose} color="primary">
+						Cancel
+					</Button>
+					<Button onClick={handleDelete} color="error" autoFocus>
+						Delete
+					</Button>
+				</DialogActions>
+			</Dialog>
+		</>
 	);
 }
 
