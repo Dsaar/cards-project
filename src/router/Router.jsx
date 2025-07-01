@@ -10,6 +10,7 @@ import ErrorPage from "../pages/ErrorPage";
 import ROUTES from "./routesDictionary";
 import SandboxPage from "../pages/SandboxPage";
 import CreateCardPage from "../pages/CreateCardPage";
+import EditCardPage from "../pages/EditCardPage";
 function Router() {
   return (
     <Routes>
@@ -21,6 +22,7 @@ function Router() {
       <Route path={ROUTES.register} element={<RegisterPage />} />
       <Route path={ROUTES.sandbox} element={<SandboxPage />} />
       <Route path={ROUTES.createCard} element={<CreateCardPage />} />
+      <Route path={ROUTES.editCard} element={<EditCardPage />} />
 
       <Route path="/*" element={<ErrorPage />} />
     </Routes>

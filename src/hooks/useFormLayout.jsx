@@ -19,7 +19,7 @@ const useFormLayout = (
 		<Grid item xs={xs} sm={sm} key={name}>
 			<TextField
 				fullWidth
-				sx={{ minWidth: "300px" }}
+				sx={{ width: "400px", mx: "auto" }}
 				label={label}
 				name={name}
 				type={type}

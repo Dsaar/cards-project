@@ -43,6 +43,7 @@ export default function useForm(initialForm, schemaObj, onSubmit) {
 
 	return {
 		formDetails,
+		setFormDetails,
 		errors,
 		handleChange,
 		handleSubmit,

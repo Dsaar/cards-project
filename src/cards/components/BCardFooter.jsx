@@ -17,6 +17,7 @@ import { getToken } from "../../users/services/localStorageService";
 import axios from "axios";
 import { useSnack } from "../../providers/SnackBarProvider";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function BCardFooter({ cardId, bizNumber, onDelete }) {
 	const setSnack = useSnack();
@@ -24,6 +25,8 @@ function BCardFooter({ cardId, bizNumber, onDelete }) {
 
 	const handleConfirmOpen = () => setOpen(true);
 	const handleConfirmClose = () => setOpen(false);
+
+	const navigate = useNavigate();
 
 	const handleDelete = async () => {
 		const token = getToken();
@@ -59,8 +62,8 @@ function BCardFooter({ cardId, bizNumber, onDelete }) {
 						<DeleteIcon />
 					</IconButton>
 
-					<IconButton>
-						<EditIcon />
+					<IconButton onClick={() => navigate(`/edit-card/${cardId}`)}>
+					<EditIcon />
 					</IconButton>
 				</Box>
 
