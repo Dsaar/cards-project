@@ -1,21 +1,75 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from "react";
+import { Container, Typography } from "@mui/material";
+import axios from "axios";
+import { getToken } from "../users/services/localStorageService";
+import { useCurrentUser } from "../users/providers/UserProvider";
+import { useSnack } from "../providers/SnackBarProvider";
+import BCards from "../cards/components/Bcards";
 
 function FavoriteCardsPage() {
-  const [count, setCount] = useState(0);
+  const [favCards, setFavCards] = useState([]);
+  const { user } = useCurrentUser();
+  const setSnack = useSnack();
+
+  const fetchFavoriteCards = async () => {
+    try {
+      const token = getToken();
+      const response = await axios.get(
+        "https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards",
+        {
+          headers: { "x-auth-token": token },
+        }
+      );
+      const liked = response.data.filter(card =>
+        card.likes.includes(user?._id)
+      );
+      setFavCards(liked);
+      setSnack("success", "Favorite cards loaded.");
+    } catch (error) {
+      console.error("Failed to fetch cards:", error);
+      setSnack("error", "Failed to load favorite cards.");
+    }
+  };
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCount(prevCount => prevCount + 1);
-    }, 1000); // 1000ms = 1 second
+    fetchFavoriteCards();
+  }, [user]);
 
-    return () => clearInterval(intervalId); // clear interval on unmount
-  }, []); // empty dependency array ensures this runs only once
+  const handleToggleLike = useCallback(async (cardId) => {
+    try {
+      const token = getToken();
+      const response = await axios.patch(
+        `https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${cardId}`,
+        {},
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+      const updatedCard = response.data;
+      if (!updatedCard.likes.includes(user?._id)) {
+        setFavCards((prev) => prev.filter(card => card._id !== updatedCard._id));
+        setSnack("info", "Card removed from favorites.");
+      } else {
+        setSnack("success", "Card added to favorites.");
+      }
+    } catch (err) {
+      console.error("Like toggle failed", err);
+      setSnack("error", "Failed to update favorite status.");
+    }
+  }, [user]);
 
   return (
-    <div>
-      FavoriteCardsPage
-      <p>Count: {count}</p>
-    </div>
+    <Container sx={{ paddingBottom: 10 }}>
+      <Typography variant="h4" gutterBottom>Favorite Cards</Typography>
+      <BCards
+        cards={favCards}
+        setCards={setFavCards}
+        onToggleLike={handleToggleLike}
+        user={user}
+      />
+    </Container>
   );
 }
 

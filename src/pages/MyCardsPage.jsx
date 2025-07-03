@@ -19,8 +19,10 @@ function MyCardsPage() {
         { headers: { 'x-auth-token': token } }
       );
       setMyCards(response.data);
+      setSnack("success", "Your cards loaded successfully.");
     } catch (err) {
       console.error('Failed to load your cards', err);
+      setSnack("error", "Failed to load your cards.");
     }
   };
 
@@ -48,8 +50,10 @@ function MyCardsPage() {
             : card
         )
       );
+      setSnack("success", "Card like status updated.");
     } catch (err) {
-      setSnack('error', 'Failed to like card');
+      console.error("Like toggle failed", err);
+      setSnack("error", "Failed to like card.");
     }
   }, [user]);
 
