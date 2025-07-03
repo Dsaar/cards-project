@@ -2,7 +2,7 @@ import { Card, CardMedia } from "@mui/material";
 import BCardBody from "./BCardBody";
 import BCardFooter from "./BCardFooter";
 
-function BCard({ card,onDelete }) {
+function BCard({ card, onDelete, toggleLike,isLiked }) {
 	return (
 		<Card sx={{ maxWidth: 300, mx: 2 }}>
 			<CardMedia
@@ -18,6 +18,8 @@ function BCard({ card,onDelete }) {
 				city={card.address.city}
 			/>
 			<BCardFooter
+				toggleLike={toggleLike}
+				isLiked={isLiked}
 				cardId={card._id}
 				bizNumber={card.bizNumber}
 				onDelete={onDelete}
