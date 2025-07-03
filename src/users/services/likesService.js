@@ -1,25 +1,20 @@
-const LIKED_CARDS_KEY = "likedCards";
+import axios from "axios";
+import { getToken } from "./localStorageService";
 
-export const getLikedCards = () => {
+export const toggleLikedCard = async (cardId) => {
+	const token = getToken();
+	if (!token) throw new Error("Missing token");
+
 	try {
-		const stored = localStorage.getItem(LIKED_CARDS_KEY);
-		return stored ? JSON.parse(stored) : [];
-	} catch {
-		return [];
+		// Toggle like status on server
+		const response = await axios.patch(
+			`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${cardId}`,
+			{},
+			{ headers: { "x-auth-token": token } }
+		);
+		return response.data; // updated card object
+	} catch (err) {
+		console.error("Failed to toggle like on server:", err);
+		throw err;
 	}
-};
-
-export const toggleLikedCard = (cardId) => {
-	const liked = getLikedCards();
-	const id = String(cardId); // ✅ ensure it's a string
-
-	const index = liked.indexOf(id);
-	if (index >= 0) {
-		liked.splice(index, 1);
-	} else {
-		liked.push(id);
-	}
-
-	localStorage.setItem(LIKED_CARDS_KEY, JSON.stringify(liked));
-	return liked; // ✅ return updated list
 };

@@ -1,31 +1,26 @@
-import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
-import { Container, Typography } from "@mui/material";
-import BCards from "../cards/components/Bcards";
-import { getToken } from "../users/services/localStorageService";
-import {
-  getLikedCards,
-  toggleLikedCard,
-} from "../users/services/likesService";
+import React, { useEffect, useState, useCallback } from 'react';
+import { Container, Typography } from '@mui/material';
+import axios from 'axios';
+import BCards from '../cards/components/Bcards';
+import { getToken } from '../users/services/localStorageService';
+import { useSnack } from '../providers/SnackBarProvider';
+import { useCurrentUser } from '../users/providers/UserProvider';
 
 function MyCardsPage() {
   const [myCards, setMyCards] = useState([]);
-  const [likedCardIds, setLikedCardIds] = useState(() => getLikedCards());
+  const setSnack = useSnack();
+  const { user } = useCurrentUser();
 
   const fetchMyCards = async () => {
     try {
       const token = getToken();
       const response = await axios.get(
-        "https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/my-cards",
-        {
-          headers: {
-            "x-auth-token": token,
-          },
-        }
+        'https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/my-cards',
+        { headers: { 'x-auth-token': token } }
       );
       setMyCards(response.data);
-    } catch (error) {
-      console.error("Failed to fetch your cards:", error);
+    } catch (err) {
+      console.error('Failed to load your cards', err);
     }
   };
 
@@ -33,20 +28,37 @@ function MyCardsPage() {
     fetchMyCards();
   }, []);
 
-  const handleToggleLike = useCallback((cardId) => {
-    const updated = toggleLikedCard(cardId);
-    setLikedCardIds(updated);
-  }, []);
+  const handleToggleLike = useCallback(async (cardId) => {
+    try {
+      const token = getToken();
+      await axios.patch(
+        `https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${cardId}`,
+        {},
+        { headers: { 'x-auth-token': token } }
+      );
+      setMyCards((prev) =>
+        prev.map((card) =>
+          card._id === cardId
+            ? {
+              ...card,
+              likes: card.likes.includes(user._id)
+                ? card.likes.filter((id) => id !== user._id)
+                : [...card.likes, user._id],
+            }
+            : card
+        )
+      );
+    } catch (err) {
+      setSnack('error', 'Failed to like card');
+    }
+  }, [user]);
 
   return (
     <Container sx={{ paddingBottom: 10 }}>
-      <Typography variant="h4" gutterBottom>My Cards</Typography>
-      <BCards
-        cards={myCards}
-        setCards={setMyCards}
-        likedCardIds={likedCardIds}
-        onToggleLike={handleToggleLike}
-      />
+      <Typography variant="h4" gutterBottom>
+        My Cards
+      </Typography>
+      <BCards cards={myCards} setCards={setMyCards} onToggleLike={handleToggleLike} user={user} />
     </Container>
   );
 }

@@ -1,7 +1,7 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import CallIcon from "@mui/icons-material/Call";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import CallIcon from '@mui/icons-material/Call';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import {
 	Box,
 	CardActions,
@@ -11,13 +11,13 @@ import {
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
-	Button
-} from "@mui/material";
-import { getToken } from "../../users/services/localStorageService";
-import axios from "axios";
-import { useSnack } from "../../providers/SnackBarProvider";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+	Button,
+} from '@mui/material';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getToken } from '../../users/services/localStorageService';
+import axios from 'axios';
+import { useSnack } from '../../providers/SnackBarProvider';
 
 function BCardFooter({ cardId, bizNumber, onDelete, toggleLike, isLiked }) {
 	const setSnack = useSnack();
@@ -33,27 +33,21 @@ function BCardFooter({ cardId, bizNumber, onDelete, toggleLike, isLiked }) {
 			await axios.delete(
 				`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${cardId}`,
 				{
-					headers: {
-						"x-auth-token": token,
-						"Content-Type": "application/json",
-					},
+					headers: { 'x-auth-token': token, 'Content-Type': 'application/json' },
 					data: { bizNumber },
 				}
 			);
-			setSnack("success", "Card deleted successfully.");
+			setSnack('success', 'Card deleted successfully.');
 			handleConfirmClose();
 			if (onDelete) onDelete(cardId);
-		} catch (error) {
-			const msg = error?.response?.data || "Card deletion failed.";
-			console.error("DELETE failed:", msg);
-			setSnack("error", msg);
-			handleConfirmClose();
+		} catch (err) {
+			setSnack('error', 'Failed to delete card');
 		}
 	};
 
 	return (
 		<>
-			<CardActions sx={{ display: "flex", justifyContent: "space-between" }} disableSpacing>
+			<CardActions sx={{ display: 'flex', justifyContent: 'space-between' }} disableSpacing>
 				<Box>
 					<IconButton onClick={handleConfirmOpen}>
 						<DeleteIcon />
@@ -67,7 +61,7 @@ function BCardFooter({ cardId, bizNumber, onDelete, toggleLike, isLiked }) {
 						<CallIcon />
 					</IconButton>
 					<IconButton onClick={() => toggleLike(cardId)}>
-						<FavoriteIcon color={isLiked ? "error" : ""} />
+						<FavoriteIcon color={isLiked ? 'error' : ''} />
 					</IconButton>
 				</Box>
 			</CardActions>
@@ -80,9 +74,7 @@ function BCardFooter({ cardId, bizNumber, onDelete, toggleLike, isLiked }) {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleConfirmClose} color="primary">
-						Cancel
-					</Button>
+					<Button onClick={handleConfirmClose}>Cancel</Button>
 					<Button onClick={handleDelete} color="error" autoFocus>
 						Delete
 					</Button>

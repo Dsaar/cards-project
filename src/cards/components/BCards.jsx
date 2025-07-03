@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import BCard from './Bcard';
 import { Box, Grid, Typography, TablePagination } from '@mui/material';
 
-function BCards({ cards, setCards, likedCardIds = [], onToggleLike = () => { } }) {
+function BCards({ cards, setCards, onToggleLike, user }) {
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(6);
 
@@ -32,12 +32,11 @@ function BCards({ cards, setCards, likedCardIds = [], onToggleLike = () => { } }
 							card={card}
 							onDelete={handleDelete}
 							toggleLike={onToggleLike}
-							isLiked={likedCardIds?.includes(card._id)}
+							isLiked={card.likes.includes(user._id)}
 						/>
 					</Grid>
 				))}
 			</Grid>
-
 			<Box display="flex" justifyContent="center" mt={4}>
 				<TablePagination
 					component="div"
