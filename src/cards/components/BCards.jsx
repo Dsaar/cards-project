@@ -32,7 +32,7 @@ function BCards({ cards, setCards, onToggleLike, user }) {
 							card={card}
 							onDelete={handleDelete}
 							toggleLike={onToggleLike}
-							isLiked={card.likes.includes(user._id)}
+							isLiked={user ? card.likes.includes(user._id) : false}
 						/>
 					</Grid>
 				))}
