@@ -9,10 +9,14 @@ import ROUTES from '../router/routesDictionary';
 import { useCurrentUser } from '../users/providers/UserProvider';
 import { getToken } from '../users/services/localStorageService';
 import { toggleLikedCard } from '../users/services/likesService';
+import { useSearchParams } from "react-router-dom";
+
 
 function CardsPage() {
   const [cards, setCards] = useState([]);
+  const [filteredCards, setFilteredCards] = useState([]);
   const setSnack = useSnack();
+  const [searchParams] = useSearchParams();
   const { user } = useCurrentUser();
 
   const getCardsFromServer = async () => {
@@ -21,7 +25,8 @@ function CardsPage() {
         'https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards'
       );
       setCards(response.data);
-      setSnack('success', "All cards imported successfully"); // ✅ Snackbar restored
+      setFilteredCards(response.data);
+      setSnack('success', "All cards imported successfully"); 
     } catch (error) {
       console.error("Failed to fetch cards:", error);
       setSnack('error', "Failed to load cards");
@@ -31,6 +36,13 @@ function CardsPage() {
   useEffect(() => {
     getCardsFromServer();
   }, []);
+
+  useEffect(() => {
+    const q = searchParams.get("q");
+    setFilteredCards(
+      cards.filter((c) => c.title.includes(q) || c.subtitle.includes(q))
+    );
+  }, [searchParams]);
 
   const handleToggleLike = useCallback(async (cardId) => {
     try {
@@ -54,7 +66,7 @@ function CardsPage() {
     <Container sx={{ paddingBottom: 10 }}>
       <Typography variant="h4" gutterBottom>Cards Page</Typography>
       <BCards
-        cards={cards}
+        cards={filteredCards}
         setCards={setCards}
         onToggleLike={handleToggleLike}
         user={user}

@@ -1,16 +1,25 @@
 import React from 'react';
-import { AppBar, Box, Toolbar, Button } from '@mui/material';
+import { AppBar, Box, Toolbar, Button, TextField } from '@mui/material';
 import NavLinkTemplate from '/src/components/NavLinkTemplate';
 import ROUTES from '../../router/routesDictionary';
 import { useTheme } from '../../providers/CustomThemeProvider';
+import { useEffect, useState } from "react";
 import { useCurrentUser } from '../../users/providers/UserProvider';
 import { removeToken } from '../../users/services/localStorageService';
 import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from "react-router-dom";
+
 
 function Header() {
 	const { toggleMode, isDark } = useTheme();
 	const { user, setUser, setToken } = useCurrentUser();
 	const navigate = useNavigate();
+	const [query, setQuery] = useState("");
+	const [searchParams, setSearchParams] = useSearchParams();
+ 
+	useEffect(() => {
+		setSearchParams({ q: query });
+	}, [query]);
 
 	const handleLogout = () => {
 		removeToken();
@@ -29,6 +38,11 @@ function Header() {
 					<NavLinkTemplate to={ROUTES.favorite} label="Favorite Card" />
 					<NavLinkTemplate to={ROUTES.sandbox} label="Sandbox" />
 				</Box>
+				<TextField
+					placeholder="Search"
+					value={query}
+					onChange={(e) => setQuery(e.target.value)}
+				/>
 
 				<Box sx={{ display: 'flex', gap: 1 }}>
 					{user ? (
