@@ -10,6 +10,7 @@ import { useCurrentUser } from '../users/providers/UserProvider';
 import { getToken } from '../users/services/localStorageService';
 import { toggleLikedCard } from '../users/services/likesService';
 import { useSearchParams } from "react-router-dom";
+import ENDPOINTS from '../api/endpoints';
 
 
 function CardsPage() {
@@ -22,7 +23,7 @@ function CardsPage() {
   const getCardsFromServer = async () => {
     try {
       const response = await axios.get(
-        'https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards'
+        ENDPOINTS.cards.all
       );
       setCards(response.data);
       setFilteredCards(response.data);
@@ -48,20 +49,37 @@ function CardsPage() {
     try {
       const token = getToken();
       const response = await axios.patch(
-        `https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${cardId}`,
+        ENDPOINTS.cards.toggleLike(cardId),
         {},
         { headers: { 'x-auth-token': token } }
       );
       const updatedCard = response.data;
+
+      // Update local state
       setCards((prev) =>
-        prev.map((card) => (card._id === updatedCard._id ? updatedCard : card))
+        prev.map((card) =>
+          card._id === updatedCard._id ? updatedCard : card
+        )
       );
+      setFilteredCards((prev) =>
+        prev.map((card) =>
+          card._id === updatedCard._id ? updatedCard : card
+        )
+      );
+
+      // ✅ Add snackbar here
+      if (updatedCard.likes.includes(user._id)) {
+        setSnack("success", "Card liked successfully!");
+      } else {
+        setSnack("info", "Card unliked successfully.");
+      }
+
     } catch (err) {
       console.error("Like toggle failed", err);
       setSnack("error", "Failed to like card");
     }
-  }, []);
-
+  }, [user, setSnack]);
+  
   return (
     <Container sx={{ paddingBottom: 10 }}>
       <Typography variant="h4" gutterBottom>Cards Page</Typography>

@@ -13,6 +13,7 @@ import initialSignupForm from "../helpers/initialForms/initialSignupForm";
 import Form from "../../components/Form";
 import { useCurrentUser } from "../providers/UserProvider";
 import { getUser, setTokenInLocalStorage } from "../services/localStorageService";
+import ENDPOINTS from "../../api/endpoints";
 
 function RegisterForm() {
 	const navigate = useNavigate();
@@ -45,12 +46,12 @@ function RegisterForm() {
 
 		try {
 			const response = await axios.post(
-				"https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users",
+				ENDPOINTS.users.register,
 				userDetailsForServer
 			);
 
 			const loginResponse = await axios.post(
-				"https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/login",
+				ENDPOINTS.users.login,
 				{
 					email: userDetails.email,
 					password: userDetails.password,

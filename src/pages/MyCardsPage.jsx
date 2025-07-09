@@ -5,6 +5,7 @@ import BCards from '../cards/components/Bcards';
 import { getToken } from '../users/services/localStorageService';
 import { useSnack } from '../providers/SnackBarProvider';
 import { useCurrentUser } from '../users/providers/UserProvider';
+import ENDPOINTS from '../api/endpoints';
 
 function MyCardsPage() {
   const [myCards, setMyCards] = useState([]);
@@ -15,7 +16,7 @@ function MyCardsPage() {
     try {
       const token = getToken();
       const response = await axios.get(
-        'https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/my-cards',
+        ENDPOINTS.cards.myCards,
         { headers: { 'x-auth-token': token } }
       );
       setMyCards(response.data);
@@ -34,7 +35,7 @@ function MyCardsPage() {
     try {
       const token = getToken();
       await axios.patch(
-        `https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${cardId}`,
+        ENDPOINTS.cards.toggleLike(cardId),
         {},
         { headers: { 'x-auth-token': token } }
       );

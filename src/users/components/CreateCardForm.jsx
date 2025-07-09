@@ -6,6 +6,7 @@ import initialCreateCardForm from "../helpers/initialForms/initialCreateCardForm
 import axios from "axios";
 import Form from "../../components/Form";
 import { getToken } from '../services/localStorageService';
+import ENDPOINTS from "../../api/endpoints";
 
 function CreateCardForm() {
 	const handleCreateCard = async (data) => {
@@ -34,7 +35,7 @@ function CreateCardForm() {
 			const token = getToken(); 
 			console.log("Sending token:", token);// get token from localStorage
 			const response = await axios.post(
-				"https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards",
+				ENDPOINTS.cards.create,
 				formattedData,
 				{
 					headers: {

@@ -15,6 +15,7 @@ import { getUser, setTokenInLocalStorage } from "../services/localStorageService
 import { useCurrentUser } from "../providers/UserProvider";
 import Form from "../../components/Form";
 import { useSnack } from '../../providers/SnackBarProvider'
+import ENDPOINTS from "../../api/endpoints";
 
 function LoginForm() {
 	const { user, setUser, setToken } = useCurrentUser();
@@ -35,7 +36,7 @@ function LoginForm() {
 
 		try {
 			const response = await axios.post(
-				"https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/login",
+				ENDPOINTS.users.login,
 				credentials
 			);
 

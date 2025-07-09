@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getToken } from "./localStorageService";
+import ENDPOINTS from "../../api/endpoints";
 
 export const toggleLikedCard = async (cardId) => {
 	const token = getToken();
@@ -8,7 +9,7 @@ export const toggleLikedCard = async (cardId) => {
 	try {
 		// Toggle like status on server
 		const response = await axios.patch(
-			`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${cardId}`,
+			ENDPOINTS.cards.toggleLike(cardId),
 			{},
 			{ headers: { "x-auth-token": token } }
 		);

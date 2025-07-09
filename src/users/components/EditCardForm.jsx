@@ -8,6 +8,7 @@ import createCardSchema from "../models/createCardSchema";
 import useFormLayout from "../../hooks/useFormLayout";
 import Form from "../../components/Form";
 import { useSnack } from "../../providers/SnackBarProvider";
+import ENDPOINTS from "../../api/endpoints";
 
 function EditCardForm() {
 	const { id } = useParams();
@@ -49,7 +50,7 @@ function EditCardForm() {
 
 			try {
 				await axios.put(
-					`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${id}`,
+					ENDPOINTS.cards.update(id),
 					formattedData,
 					{
 						headers: { "x-auth-token": token },
@@ -69,7 +70,7 @@ function EditCardForm() {
 			try {
 				const token = getToken();
 				const { data } = await axios.get(
-					`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${id}`,
+					ENDPOINTS.cards.single(id),
 					{
 						headers: { "x-auth-token": token },
 					}
