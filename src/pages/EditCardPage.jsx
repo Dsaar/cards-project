@@ -1,21 +1,12 @@
 import React from "react";
-import { Box } from "@mui/material";
 import EditCardForm from "../users/components/EditCardForm";
+import FormPageLayout from "../layout/FormPageLayout";
 
 function EditCardPage() {
 	return (
-		<Box
-			sx={{
-				minHeight: "100vh",
-				backgroundColor: "#e3f2fd",
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center",
-				p: 0,
-			}}
-		>
+		<FormPageLayout>
 			<EditCardForm />
-		</Box>
+		</FormPageLayout>
 	);
 }
 

@@ -1,23 +1,11 @@
-import React from 'react'
-import LoginForm from '../users/components/LoginForm'
-import { Box } from '@mui/material'
+import FormPageLayout from '../layout/FormPageLayout';
+import LoginForm from '../users/components/LoginForm';
 
 function LoginPage() {
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        backgroundColor: '#e3f2fd', // light blue
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        p: 0,
-       
-      }}
-    >
+    <FormPageLayout sx={{pt:15}}>
       <LoginForm />
-    </Box>
-  )
+    </FormPageLayout>
+  );
 }
-
-export default LoginPage
+export default LoginPage;

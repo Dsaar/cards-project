@@ -1,24 +1,13 @@
-import { Box } from '@mui/material'
 import React from 'react'
 import CreateCardForm from '../users/components/CreateCardForm'
+import FormPageLayout from '../layout/FormPageLayout';
+
 
 function CreateCardPage() {
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        backgroundColor: '#e3f2fd', // light blue
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        p: 0,
-  
-      }}
-
-    >
+    <FormPageLayout>
       <CreateCardForm />
-
-    </Box>
+    </FormPageLayout>
   )
 }
 
