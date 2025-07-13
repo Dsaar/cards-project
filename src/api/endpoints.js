@@ -13,6 +13,7 @@ const ENDPOINTS = {
 		create: `${BASE_URL}/cards`,
 		update: (id) => `${BASE_URL}/cards/${id}`,
 		toggleLike: (id) => `${BASE_URL}/cards/${id}`,
+		delete: (id) => `${BASE_URL}/cards/${id}`,
 	},
 };
 

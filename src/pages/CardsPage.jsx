@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Typography from '@mui/material/Typography';
 import { Container } from '@mui/material';
-import BCards from '../cards/components/Bcards';
+import BCards from '../cards/components/BCards';
 import axios from 'axios';
 import { useSnack } from '../providers/SnackBarProvider';
 import AddNewItemButton from '../components/AddNewItemButton';

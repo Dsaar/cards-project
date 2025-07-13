@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { getToken } from '../../users/services/localStorageService';
 import axios from 'axios';
 import { useSnack } from '../../providers/SnackBarProvider';
+import ENDPOINTS from '../../api/endpoints';
 
 function BCardFooter({ cardId, bizNumber, onDelete, toggleLike, isLiked }) {
 	const setSnack = useSnack();
@@ -34,7 +35,7 @@ function BCardFooter({ cardId, bizNumber, onDelete, toggleLike, isLiked }) {
 		const token = getToken();
 		try {
 			await axios.delete(
-				`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${cardId}`,
+				ENDPOINTS.cards.delete(cardId),
 				{
 					headers: { 'x-auth-token': token, 'Content-Type': 'application/json' },
 					data: { bizNumber },

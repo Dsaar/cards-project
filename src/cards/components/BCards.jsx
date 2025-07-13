@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import BCard from './Bcard';
+import BCard from './BCard';
 import { Box, Grid, Typography, TablePagination } from '@mui/material';
 
 function BCards({ cards, setCards, onToggleLike, user }) {
