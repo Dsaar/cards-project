@@ -7,7 +7,11 @@ const ROUTES = {
 	register: "/register",
 	sandbox:"/sandbox",
 	createCard:"/create-card",
-	editCard:"/edit-card/:id"
+	editCard:"/edit-card/:id",
+	cardDetails: '/card/:id',
+	cardDetailsDynamic: (id) => `/card/${id}`,
+
+
 };
 
 export default ROUTES;

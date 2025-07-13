@@ -1,14 +1,25 @@
 import { Card, CardMedia } from "@mui/material";
 import BCardBody from "./BCardBody";
 import BCardFooter from "./BCardFooter";
+import { useNavigate } from "react-router-dom";
+import ROUTES from "../../router/routesDictionary";
 
-function BCard({ card, onDelete, toggleLike,isLiked }) {
+function BCard({ card, onDelete, toggleLike, isLiked }) {
+	const navigate = useNavigate();
+
+	const handleCardClick = () => {
+		navigate(ROUTES.cardDetailsDynamic(card._id));
+	};
+
 	return (
-		<Card sx={{ maxWidth: 300, mx: 2 }}>
+		<Card
+			sx={{ maxWidth: 300, mx: 2, cursor: "pointer" }}
+			onClick={handleCardClick}
+		>
 			<CardMedia
 				sx={{ height: 140 }}
 				image={card.image.url}
-				title="Businees logo"
+				title="Business logo"
 			/>
 			<BCardBody
 				title={card.title}

@@ -24,7 +24,10 @@ function BCardFooter({ cardId, bizNumber, onDelete, toggleLike, isLiked }) {
 	const navigate = useNavigate();
 	const [open, setOpen] = useState(false);
 
-	const handleConfirmOpen = () => setOpen(true);
+	const handleConfirmOpen = (e) => {
+		e.stopPropagation();
+		setOpen(true);
+	};
 	const handleConfirmClose = () => setOpen(false);
 
 	const handleDelete = async () => {
@@ -49,18 +52,27 @@ function BCardFooter({ cardId, bizNumber, onDelete, toggleLike, isLiked }) {
 		<>
 			<CardActions sx={{ display: 'flex', justifyContent: 'space-between' }} disableSpacing>
 				<Box>
-					<IconButton onClick={handleConfirmOpen}>
+					<IconButton onClick={(e) => handleConfirmOpen(e)}>
 						<DeleteIcon />
 					</IconButton>
-					<IconButton onClick={() => navigate(`/edit-card/${cardId}`)}>
+					<IconButton onClick={(e) => {
+						e.stopPropagation();
+						navigate(`/edit-card/${cardId}`);
+					}}>
 						<EditIcon />
 					</IconButton>
 				</Box>
 				<Box>
-					<IconButton>
+					<IconButton onClick={(e) => {
+						e.stopPropagation();
+						window.open(`tel:${bizNumber}`, '_self');
+					}}>
 						<CallIcon />
 					</IconButton>
-					<IconButton onClick={() => toggleLike(cardId)}>
+					<IconButton onClick={(e) => {
+						e.stopPropagation();
+						toggleLike(cardId);
+					}}>
 						<FavoriteIcon color={isLiked ? 'error' : ''} />
 					</IconButton>
 				</Box>
