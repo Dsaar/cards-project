@@ -4,7 +4,8 @@ const ENDPOINTS = {
 	users: {
 		register: `${BASE_URL}/users`,
 		login: `${BASE_URL}/users/login`,
-		me: `${BASE_URL}/users/me`
+		me: `${BASE_URL}/users/me`,
+		all:`${BASE_URL}/users`,
 	},
 	cards: {
 		all: `${BASE_URL}/cards`,

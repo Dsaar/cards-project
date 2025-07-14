@@ -5,6 +5,7 @@ import MessageProvider from '../sandbox/providers/SpecialMessageProvider'
 import { useCurrentUser } from '../users/providers/UserProvider'
 import { Navigate } from 'react-router-dom'
 import Counter from '../sandbox/components/Counter'
+import CRMUsers from '../users/components/CRMUsers'
 
 function SandboxPage() {
 
@@ -21,7 +22,8 @@ function SandboxPage() {
 			{/* <MessageProvider>
 				<Parent></Parent>
 			</MessageProvider> */}
-			<Counter></Counter>
+			{/* <Counter></Counter> */}
+			<CRMUsers></CRMUsers>
 		</div>
 	)
 }
