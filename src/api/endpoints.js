@@ -6,6 +6,8 @@ const ENDPOINTS = {
 		login: `${BASE_URL}/users/login`,
 		me: `${BASE_URL}/users/me`,
 		all:`${BASE_URL}/users`,
+		toggleBusinessStatus: (id) => `${BASE_URL}/users/${id}`,
+
 	},
 	cards: {
 		all: `${BASE_URL}/cards`,
