@@ -7,6 +7,7 @@ const ENDPOINTS = {
 		me: `${BASE_URL}/users/me`,
 		all:`${BASE_URL}/users`,
 		toggleBusinessStatus: (id) => `${BASE_URL}/users/${id}`,
+		deleteUser:(id)=>`${BASE_URL}/users/${id}`,
 
 	},
 	cards: {
